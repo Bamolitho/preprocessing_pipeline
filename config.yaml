@@ -1,0 +1,153 @@
+# =============================================================================
+# PREPROCESSING PIPELINE CONFIGURATION FILE
+# =============================================================================
+# This file controls all aspects of the data preprocessing pipeline.
+# Modify these parameters to customize the preprocessing for your project.
+# =============================================================================
+
+preprocessing:
+  # ---------------------------------------------------------------------------
+  # STEP 1: DATA CLEANING
+  # ---------------------------------------------------------------------------
+  # Remove duplicate rows from the dataset
+  remove_duplicates: true
+  
+  # Handle outliers in numerical features
+  handle_outliers: false
+  
+  # Outlier detection method: 'iqr' (Interquartile Range) or 'zscore'
+  outlier_method: 'iqr'
+  
+  # ---------------------------------------------------------------------------
+  # STEP 2: MISSING VALUES HANDLING
+  # ---------------------------------------------------------------------------
+  # Enable missing value imputation
+  handle_missing: true
+  
+  # Strategy for numerical features: 'mean', 'median', or 'most_frequent'
+  missing_numerical_strategy: 'mean'
+  
+  # Strategy for categorical features: 'most_frequent' or 'constant'
+  missing_categorical_strategy: 'most_frequent'
+  
+  # ---------------------------------------------------------------------------
+  # STEP 4: CATEGORICAL ENCODING
+  # ---------------------------------------------------------------------------
+  # Enable categorical variable encoding
+  encode_categorical: true
+  
+  # Encoding method: 'onehot' for One-Hot Encoding, 'label' for Label Encoding
+  # Note: 'onehot' is recommended for nominal categories
+  #       'label' is recommended for ordinal categories
+  categorical_encoding_method: 'onehot'
+  
+  # ---------------------------------------------------------------------------
+  # STEP 5: STATISTICAL FILTERING
+  # ---------------------------------------------------------------------------
+  # Remove features with low variance (near-constant features)
+  remove_low_variance: true
+  
+  # Variance threshold: features with variance below this value will be removed
+  # Lower values are more aggressive (remove more features)
+  variance_threshold: 0.01
+  
+  # Remove highly correlated features (to reduce multicollinearity)
+  remove_correlated: true
+  
+  # Correlation threshold: if |corr(Xi, Xj)| > threshold, one feature is removed
+  # Higher values are more aggressive (remove more features)
+  correlation_threshold: 0.95
+  
+  # ---------------------------------------------------------------------------
+  # STEP 6: SCALING/NORMALIZATION
+  # ---------------------------------------------------------------------------
+  # Enable feature scaling
+  # Note: Disable for tree-based models (DT, RandomForest, XGBoost, etc.)
+  #       Enable for distance-based models (SVM, KNN, Neural Networks)
+  use_scaler: true
+  
+  # Scaling method: 'standard' (z-score) or 'minmax' (0-1 range)
+  # 'standard': (x - mean) / std -> mean=0, std=1
+  # 'minmax': (x - min) / (max - min) -> range [0, 1]
+  scaling_method: 'standard'
+  
+  # ---------------------------------------------------------------------------
+  # STEP 7: DIMENSIONALITY REDUCTION
+  # ---------------------------------------------------------------------------
+  # WARNING: Only ONE dimensionality reduction method should be enabled at a time
+  
+  # PCA (Principal Component Analysis) - Unsupervised
+  # Maximizes variance, good for general dimensionality reduction
+  use_pca: false
+  
+  # Number of PCA components to keep
+  # Can be an integer, a float (0.0 to 1.0) for explained variance ratio,
+  # or 'auto' to automatically determine
+  n_components: 10
+  
+  # ICA (Independent Component Analysis) - Unsupervised
+  # Separates independent sources, good for signal separation
+  use_ica: false
+  
+  # Number of ICA components
+  ica_components: 10
+  
+  # LDA (Linear Discriminant Analysis) - Supervised
+  # Maximizes class separability, requires target variable
+  # Note: LDA is limited to (n_classes - 1) components
+  use_lda: false
+  
+  # Number of LDA components
+  lda_components: 'auto'
+  
+  # ---------------------------------------------------------------------------
+  # STEP 8: FEATURE SELECTION
+  # ---------------------------------------------------------------------------
+  # Enable feature selection to keep only the most relevant features
+  feature_selection: false
+  
+  # Selection method:
+  # - 'auto': Automatically choose based on problem type
+  # - 'f_test': ANOVA F-test (classification) or F-regression (regression)
+  # - 'mutual_info': Mutual information between features and target
+  # - 'chi2': Chi-squared test (classification only, requires non-negative features)
+  # - 'random_forest': Use Random Forest feature importance
+  selection_method: 'auto'
+  
+  # Number of top features to select
+  k_best: 10
+  
+  # Problem type: 'classification', 'regression', or 'auto' (auto-detect)
+  problem_type: 'auto'
+
+# =============================================================================
+# MODEL-SPECIFIC RECOMMENDATIONS
+# =============================================================================
+# 
+# For LINEAR MODELS (Linear Regression, Logistic Regression, SVM):
+#   - use_scaler: true (standard or minmax)
+#   - encode_categorical: true (onehot)
+#   - feature_selection: true (helps with regularization)
+#
+# For TREE-BASED MODELS (Random Forest, XGBoost, Decision Trees):
+#   - use_scaler: false (trees are scale-invariant)
+#   - encode_categorical: true (label encoding is fine)
+#   - remove_correlated: false (trees can handle correlation)
+#
+# For DISTANCE-BASED MODELS (KNN, K-Means):
+#   - use_scaler: true (critical! use standard or minmax)
+#   - encode_categorical: true (onehot)
+#   - remove_correlated: true (improves distance calculations)
+#
+# For NEURAL NETWORKS (Deep Learning):
+#   - use_scaler: true (standard or minmax)
+#   - encode_categorical: true (onehot)
+#   - feature_selection: optional (networks can learn feature importance)
+#
+# For DIMENSIONALITY REDUCTION:
+#   - Always apply scaling BEFORE PCA/ICA/LDA
+#   - Use PCA for general variance-based reduction
+#   - Use LDA for classification tasks (maximizes class separation)
+#   - Use ICA for independent signal extraction
+#
+# =============================================================================

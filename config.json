@@ -1,0 +1,94 @@
+{
+  "_comment": "Professional Data Preprocessing Pipeline Configuration (JSON Format)",
+  "_description": "This configuration file controls all aspects of the preprocessing pipeline",
+  
+  "preprocessing": {
+    "_step_1": "DATA CLEANING",
+    "remove_duplicates": true,
+    "handle_outliers": false,
+    "outlier_method": "iqr",
+    
+    "_step_2": "MISSING VALUES HANDLING",
+    "handle_missing": true,
+    "missing_numerical_strategy": "mean",
+    "missing_categorical_strategy": "most_frequent",
+    
+    "_step_4": "CATEGORICAL ENCODING",
+    "encode_categorical": true,
+    "categorical_encoding_method": "onehot", 
+    
+    "_step_5": "STATISTICAL FILTERING",
+    "remove_low_variance": true,
+    "variance_threshold": 0.01,
+    "remove_correlated": true,
+    "correlation_threshold": 0.95,
+    
+    "_step_6": "SCALING_NORMALIZATION",
+    "use_scaler": true,
+    "scaling_method": "standard",
+    
+    "_step_7": "DIMENSIONALITY REDUCTION (choose only ONE)",
+    "use_pca": false,
+    "n_components": 10,
+    "use_ica": false,
+    "ica_components": 10,
+    "use_lda": false,
+    "lda_components": "auto",
+    
+    "_step_8": "FEATURE SELECTION",
+    "feature_selection": false,
+    "selection_method": "auto",
+    "k_best": 10,
+    "problem_type": "auto",
+    
+    "_notes": {
+      "scaling_methods": ["standard", "minmax"],
+      "outlier_methods": ["iqr", "zscore"],
+      "encoding_methods": ["onehot", "label"],
+      "selection_methods": ["auto", "f_test", "mutual_info", "chi2", "random_forest"],
+      "problem_types": ["auto", "classification", "regression"],
+      "missing_strategies": ["mean", "median", "most_frequent", "constant"]
+    }
+  },
+  
+  "model_specific_presets": {
+    "_description": "Pre-configured settings for different model types",
+    
+    "linear_models": {
+      "description": "For Linear/Logistic Regression, SVM",
+      "use_scaler": true,
+      "scaling_method": "standard",
+      "encode_categorical": true,
+      "categorical_encoding_method": "onehot",
+      "feature_selection": true,
+      "remove_correlated": true
+    },
+    
+    "tree_based_models": {
+      "description": "For Random Forest, XGBoost, Decision Trees",
+      "use_scaler": false,
+      "encode_categorical": true,
+      "categorical_encoding_method": "label",
+      "remove_correlated": false,
+      "feature_selection": false
+    },
+    
+    "distance_based_models": {
+      "description": "For KNN, K-Means",
+      "use_scaler": true,
+      "scaling_method": "minmax",
+      "encode_categorical": true,
+      "categorical_encoding_method": "onehot",
+      "remove_correlated": true
+    },
+    
+    "neural_networks": {
+      "description": "For Deep Learning models",
+      "use_scaler": true,
+      "scaling_method": "standard",
+      "encode_categorical": true,
+      "categorical_encoding_method": "onehot",
+      "feature_selection": false
+    }
+  }
+}
